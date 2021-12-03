@@ -28,7 +28,7 @@ pub fn part1(input: &str) -> usize {
     return gamma * epsilon;
 }
 
-enum lifeSupport {
+enum LifeSupport {
     CO2,
     Oxygen,
 }
@@ -36,12 +36,12 @@ enum lifeSupport {
 #[aoc(day3, part2)]
 pub fn part2(input: &str) -> usize {
     let lines = input.lines().into_iter().collect::<Vec<&str>>();
-    let oxygen_rating = filter_number_list(lines.clone(), 0, lifeSupport::Oxygen);
-    let co2_rating = filter_number_list(lines, 0, lifeSupport::CO2);
+    let oxygen_rating = filter_number_list(lines.clone(), 0, LifeSupport::Oxygen);
+    let co2_rating = filter_number_list(lines, 0, LifeSupport::CO2);
     return oxygen_rating * co2_rating;
 }
 
-fn filter_number_list(numbers: Vec<&str>, index: usize, version: lifeSupport) -> usize {
+fn filter_number_list(numbers: Vec<&str>, index: usize, version: LifeSupport) -> usize {
     let mut ones: Vec<&str> = Vec::new();
     let mut zeros: Vec<&str> = Vec::new();
 
@@ -54,14 +54,14 @@ fn filter_number_list(numbers: Vec<&str>, index: usize, version: lifeSupport) ->
         }
     }
     let selected_vec = match version {
-        lifeSupport::CO2 => {
+        LifeSupport::CO2 => {
             if zeros.len() <= ones.len() {
                 zeros
             } else {
                 ones
             }
         }
-        lifeSupport::Oxygen => {
+        LifeSupport::Oxygen => {
             if ones.len() >= zeros.len() {
                 ones
             } else {
