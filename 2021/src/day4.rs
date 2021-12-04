@@ -52,7 +52,9 @@ pub fn input_generator(input: &str) -> Input {
                 break 'boards;
             }
         }
-        boards.push(Board { numbers: numbers })
+        if numbers.len() != 0 {
+            boards.push(Board { numbers: numbers })
+        }
     }
 
     Input {
@@ -84,6 +86,39 @@ pub fn part1(input: &Input) -> usize {
     }
 }
 
+#[aoc(day4, part2)]
+pub fn part2(input: &Input) -> usize {
+    let mut latest_number = 1;
+    let mut boards = input.boards.clone();
+
+    let mut losing_board: Option<Board> = None;
+    'outer: for number in input.numbers.clone().into_iter() {
+        latest_number = number;
+        let mut boards_winning_this_round: Vec<usize> = Vec::new();
+        for board_number in 0..boards.len() {
+            boards[board_number].remove_number(number);
+            if boards[board_number].has_won() {
+                if boards.len() == 1 {
+                    losing_board = Some(boards[0].clone());
+                    break 'outer;
+                }
+                boards_winning_this_round.push(board_number);
+            }
+        }
+        //println!("Removed boards: {}", boards_winning_this_round.len());
+        let mut removed_so_far_index = 0;
+        for board in boards_winning_this_round {
+            boards.remove(board - removed_so_far_index);
+            removed_so_far_index = removed_so_far_index + 1;
+        }
+    }
+    if let Some(board) = losing_board {
+        return board.get_score(latest_number);
+    } else {
+        return 0;
+    }
+}
+
 impl Board {
     fn remove_number(&mut self, number: usize) {
         self.numbers = self
@@ -94,15 +129,15 @@ impl Board {
                 numbers: {
                     x.numbers
                         .into_iter()
-                        .map(|x| {
-                            match x {
-                                Some(y) => if y == number {
+                        .map(|x| match x {
+                            Some(y) => {
+                                if y == number {
                                     None
                                 } else {
                                     Some(y)
-                                },
-                                None => None,
+                                }
                             }
+                            None => None,
                         })
                         .collect()
                 },
@@ -142,7 +177,14 @@ fn has_board_won(board: &Board) -> bool {
         ]
         .concat(),
     };
-    temp_board.numbers.into_iter().any(|x| x.numbers.into_iter().filter(|y| y.is_some()).collect::<Vec<Option<usize>>>().len() == 0)
+    temp_board.numbers.into_iter().any(|x| {
+        x.numbers
+            .into_iter()
+            .filter(|y| y.is_some())
+            .collect::<Vec<Option<usize>>>()
+            .len()
+            == 0
+    })
 }
 
 fn get_column(matrix: Vec<Row>, index: usize) -> Vec<Option<usize>> {
