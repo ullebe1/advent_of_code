@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
-
 #[derive(PartialEq, Clone, Eq, Hash)]
 pub struct Coordinate {
     x: usize,
@@ -42,27 +41,46 @@ pub fn input_generator(input: &str) -> Input {
     Input { vectors: vectors }
 }
 
-
 #[aoc(day5, part1)]
 pub fn part1_map(input: &Input) -> usize {
-    let all_points = input.vectors.clone().into_iter().map(|x| generate_points(&x, false)).collect::<Vec<Vec<Coordinate>>>().concat();
+    let all_points = input
+        .vectors
+        .clone()
+        .into_iter()
+        .map(|x| generate_points(&x, false))
+        .collect::<Vec<Vec<Coordinate>>>()
+        .concat();
     let mut map = HashMap::new();
     for point in all_points {
         let entry = map.entry(point).or_insert(0 as usize);
         *entry = *entry + 1;
     }
-    map.into_iter().map(|(_, x)| x).filter(|x| x > &1).collect::<Vec<usize>>().len()
+    map.into_iter()
+        .map(|(_, x)| x)
+        .filter(|x| x > &1)
+        .collect::<Vec<usize>>()
+        .len()
 }
 
 #[aoc(day5, part2)]
 pub fn part2_map(input: &Input) -> usize {
-    let all_points = input.vectors.clone().into_iter().map(|x| generate_points(&x, true)).collect::<Vec<Vec<Coordinate>>>().concat();
+    let all_points = input
+        .vectors
+        .clone()
+        .into_iter()
+        .map(|x| generate_points(&x, true))
+        .collect::<Vec<Vec<Coordinate>>>()
+        .concat();
     let mut map = HashMap::new();
     for point in all_points {
         let entry = map.entry(point).or_insert(0 as usize);
         *entry = *entry + 1;
     }
-    map.into_iter().map(|(_, x)| x).filter(|x| x > &1).collect::<Vec<usize>>().len()
+    map.into_iter()
+        .map(|(_, x)| x)
+        .filter(|x| x > &1)
+        .collect::<Vec<usize>>()
+        .len()
 }
 
 fn generate_points(vector: &Vector, diagonal: bool) -> Vec<Coordinate> {
@@ -77,13 +95,19 @@ fn generate_points(vector: &Vector, diagonal: bool) -> Vec<Coordinate> {
         (vector.stop.y..=vector.start.y).rev().collect()
     };
 
-    let v1p: Vec<Coordinate> = if v1x.len() == 1  {
-        v1y.into_iter().map(|y| Coordinate { x: v1x[0], y: y }).collect()
-    } else if v1y.len() == 1{
-        v1x.into_iter().map(|x| Coordinate { x: x, y: v1y[0] }).collect()
+    let v1p: Vec<Coordinate> = if v1x.len() == 1 {
+        v1y.into_iter()
+            .map(|y| Coordinate { x: v1x[0], y: y })
+            .collect()
+    } else if v1y.len() == 1 {
+        v1x.into_iter()
+            .map(|x| Coordinate { x: x, y: v1y[0] })
+            .collect()
     } else {
         if diagonal {
-            (v1x.into_iter().zip(v1y)).map(|(x, y)| Coordinate { x: x, y: y}).collect()
+            (v1x.into_iter().zip(v1y))
+                .map(|(x, y)| Coordinate { x: x, y: y })
+                .collect()
         } else {
             Vec::new()
         }
