@@ -57,7 +57,6 @@ pub fn part2(input: &Input) -> usize {
         .clone()
         .into_iter()
         .map(|x| x.position.abs_diff(target))
-        .map(|x| (x * (x + 1))/2)
+        .map(|x| (x * (x + 1)) / 2)
         .sum::<usize>()
 }
-
