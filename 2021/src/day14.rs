@@ -70,8 +70,7 @@ pub fn part2_clever(input: &Input) -> usize {
 }
 
 fn solve_naive(mut template: Vec<char>, rules: HashMap<(char, char), char>, iterations: usize) -> usize {
-    for i in 0..iterations {
-        println!("Starting iteration {}", i);
+    for _ in 0..iterations {
         template = {
             let inserts = template
                 .windows(2)
@@ -98,8 +97,7 @@ fn solve_clever(template: Vec<char>, rules: HashMap<(char, char), char>, iterati
         *pairs.entry((pair[0], pair[1])).or_insert(0) += 1;
     }
 
-    for i in 0..iterations {
-        println!("Starting iteration {}", i);
+    for _ in 0..iterations {
         let mut new_pairs = HashMap::new();
         for ((a, b), value) in pairs {
             let c = *rules.get(&(a, b)).unwrap();
@@ -116,7 +114,7 @@ fn solve_clever(template: Vec<char>, rules: HashMap<(char, char), char>, iterati
     }
 
     match occurences.into_iter().minmax_by_key(|&(_, count)| count) {
-        itertools::MinMaxResult::MinMax(min, max) => {println!("{}, {}", min.1, max.1); ((max.1 - min.1) as f64 / 2 as f64).round() as usize},
+        itertools::MinMaxResult::MinMax(min, max) => ((max.1 - min.1) as f64 / 2 as f64).round() as usize,
         _ => unreachable!()
     }    
 }
