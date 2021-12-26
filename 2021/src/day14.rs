@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 use itertools::Itertools;
@@ -69,17 +69,24 @@ pub fn part2_clever(input: &Input) -> usize {
     solve_clever(template, rules, 40)
 }
 
-fn solve_naive(mut template: Vec<char>, rules: HashMap<(char, char), char>, iterations: usize) -> usize {
+fn solve_naive(
+    mut template: Vec<char>,
+    rules: HashMap<(char, char), char>,
+    iterations: usize,
+) -> usize {
     for _ in 0..iterations {
         template = {
             let inserts = template
                 .windows(2)
                 .map(|x| *rules.get(&(x[0], x[1])).unwrap())
                 .collect::<Vec<char>>();
-            template.into_iter().interleave(inserts.into_iter()).collect()
+            template
+                .into_iter()
+                .interleave(inserts.into_iter())
+                .collect()
         }
     }
-    
+
     let mut occurences = HashMap::new();
     for char in template {
         *occurences.entry(char).or_insert(0) += 1;
@@ -87,11 +94,15 @@ fn solve_naive(mut template: Vec<char>, rules: HashMap<(char, char), char>, iter
 
     match occurences.into_iter().minmax_by_key(|&(_, count)| count) {
         itertools::MinMaxResult::MinMax(min, max) => max.1 - min.1,
-        _ => unreachable!()
-    }    
+        _ => unreachable!(),
+    }
 }
 
-fn solve_clever(template: Vec<char>, rules: HashMap<(char, char), char>, iterations: usize) -> usize {
+fn solve_clever(
+    template: Vec<char>,
+    rules: HashMap<(char, char), char>,
+    iterations: usize,
+) -> usize {
     let mut pairs: HashMap<(char, char), usize> = HashMap::new();
     for pair in template.windows(2) {
         *pairs.entry((pair[0], pair[1])).or_insert(0) += 1;
@@ -106,7 +117,7 @@ fn solve_clever(template: Vec<char>, rules: HashMap<(char, char), char>, iterati
         }
         pairs = new_pairs
     }
-    
+
     let mut occurences = HashMap::new();
     for (pair, value) in pairs {
         *occurences.entry(pair.0).or_insert(0) += value;
@@ -114,7 +125,9 @@ fn solve_clever(template: Vec<char>, rules: HashMap<(char, char), char>, iterati
     }
 
     match occurences.into_iter().minmax_by_key(|&(_, count)| count) {
-        itertools::MinMaxResult::MinMax(min, max) => ((max.1 - min.1) as f64 / 2 as f64).round() as usize,
-        _ => unreachable!()
-    }    
+        itertools::MinMaxResult::MinMax(min, max) => {
+            ((max.1 - min.1) as f64 / 2 as f64).round() as usize
+        }
+        _ => unreachable!(),
+    }
 }
