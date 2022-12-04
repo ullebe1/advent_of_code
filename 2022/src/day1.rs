@@ -19,7 +19,7 @@ pub fn input_generator(input: &str) -> Input {
                     break 'foods;
                 } else {
                     food.push(l.parse::<usize>().unwrap())
-                }          
+                }
             } else {
                 break 'elves;
             }

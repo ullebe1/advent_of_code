@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use itertools::Itertools;
+use std::collections::HashSet;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -12,9 +12,8 @@ pub struct Input {
 pub fn input_generator(input: &str) -> Input {
     let rounds = input
         .lines()
-        .map(|line| {
-            line.chars().into_iter().collect::<Vec<char>>()
-        }).collect();
+        .map(|line| line.chars().into_iter().collect::<Vec<char>>())
+        .collect();
     Input { rounds: rounds }
 }
 
@@ -26,9 +25,14 @@ pub fn part1(input: &Input) -> usize {
         .into_iter()
         .map(|line| {
             let mut chars: Vec<char> = line.into_iter().collect();
-            let second_half = chars.split_off(chars.len() / 2).into_iter().collect::<HashSet<char>>();
+            let second_half = chars
+                .split_off(chars.len() / 2)
+                .into_iter()
+                .collect::<HashSet<char>>();
             let first_half = chars.into_iter().collect::<HashSet<char>>();
-            let intersection = first_half.intersection(&second_half).collect::<Vec<&char>>();
+            let intersection = first_half
+                .intersection(&second_half)
+                .collect::<Vec<&char>>();
             assert_eq!(intersection.len(), 1);
             intersection[0].clone()
         })
@@ -38,7 +42,8 @@ pub fn part1(input: &Input) -> usize {
             } else {
                 (item as usize) - 38
             }
-        }).sum()
+        })
+        .sum()
 }
 
 #[aoc(day3, part2)]
