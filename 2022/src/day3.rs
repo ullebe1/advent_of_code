@@ -29,7 +29,7 @@ pub fn part1(input: &Input) -> usize {
             let second_half = chars.split_off(chars.len() / 2).into_iter().collect::<HashSet<char>>();
             let first_half = chars.into_iter().collect::<HashSet<char>>();
             let intersection = first_half.intersection(&second_half).collect::<Vec<&char>>();
-            assert!(intersection.len() == 1);
+            assert_eq!(intersection.len(), 1);
             intersection[0].clone()
         })
         .map(|item| {
@@ -51,7 +51,7 @@ pub fn part2(input: &Input) -> usize {
         .into_iter()
         .map(|chunk| {
             let rucksacks = chunk.collect::<Vec<_>>();
-            assert!(rucksacks.len() == 3);
+            assert_eq!(rucksacks.len(), 3);
 
             // Define rucksacks to help lifetimes
             let rucksack_1 = rucksacks[0].to_owned().into_iter().collect::<HashSet<_>>();
@@ -61,7 +61,7 @@ pub fn part2(input: &Input) -> usize {
             // Intersections to find common item to all three
             let intersection_1 = rucksack_1.intersection(&rucksack_2).collect::<HashSet<_>>();
             let intersection_2 = intersection_1.intersection(&rucksack_3).collect::<Vec<_>>();
-            assert!(intersection_2.len() == 1);
+            assert_eq!(intersection_2.len(), 1);
 
             // The badge
             **intersection_2[0]

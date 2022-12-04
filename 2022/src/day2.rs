@@ -22,7 +22,7 @@ pub struct Input {
 pub fn input_generator(input: &str) -> Input {
     let rounds = input.lines().map(|line| {
         let items: Vec<&str> = line.split_ascii_whitespace().collect();
-        assert!(items.len() == 2);
+        assert_eq!(items.len(), 2);
         let opponent_hand = match items[0] {
             "A" => OpponentHands::Rock,
             "B" => OpponentHands::Paper,
