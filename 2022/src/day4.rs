@@ -63,8 +63,6 @@ pub fn part2(input: &Input) -> usize {
         .map(|pair| {
             if pair.0.overlap(&pair.1) {
                 1
-            } else if pair.1.overlap(&pair.0) {
-                1
             } else {
                 0
             }
