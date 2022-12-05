@@ -60,12 +60,6 @@ pub fn part2(input: &Input) -> usize {
         .pairs
         .clone()
         .into_iter()
-        .map(|pair| {
-            if pair.0.overlap(&pair.1) {
-                1
-            } else {
-                0
-            }
-        })
+        .map(|pair| if pair.0.overlap(&pair.1) { 1 } else { 0 })
         .sum()
 }
