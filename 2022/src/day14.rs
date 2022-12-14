@@ -4,6 +4,7 @@ use aoc_runner_derive::{aoc, aoc_generator};
 pub enum Content {
     Sand,
     Rock,
+    Origin,
 }
 
 #[derive(Debug, Clone)]
@@ -42,53 +43,54 @@ pub fn input_generator(input: &str) -> Input {
             assert_eq!(window.len(), 2);
             // if horisontal
             if window[0].1 == window[1].1 {
-                println!(
-                    "Hor {} {} {} {}",
-                    window[0].0, window[1].0, window[0].1, window[1].1
-                );
-                for i in window[1].0..=window[0].0 {
-                    println!("{}", i);
-                    let item = &mut grid[window[0].1][i];
-                    *item = Some(Content::Rock);
+                if window[1].0 < window[0].0 {
+                    for i in window[1].0..=window[0].0 {
+                        let item = &mut grid[window[0].1][i];
+                        *item = Some(Content::Rock);
+                    }
+                } else {
+                    for i in window[0].0..=window[1].0 {
+                        let item = &mut grid[window[0].1][i];
+                        *item = Some(Content::Rock);
+                    }
                 }
-
             // else vertical
             } else {
-                println!(
-                    "Ver {} {} {} {}",
-                    window[0].0, window[1].0, window[0].1, window[1].1
-                );
-                for i in window[0].1..=window[1].1 {
-                    let item = &mut grid[i][window[0].0];
-                    *item = Some(Content::Rock);
+                if window[0].1 < window[1].1 {
+                    for i in window[0].1..=window[1].1 {
+                        let item = &mut grid[i][window[0].0];
+                        *item = Some(Content::Rock);
+                    }
+                } else {
+                    for i in window[1].1..=window[0].1 {
+                        let item = &mut grid[i][window[0].0];
+                        *item = Some(Content::Rock);
+                    }
                 }
             }
         }
     }
 
-    let pretty_grid = (&grid)
-        .into_iter()
-        .map(|x| {
-            x.into_iter()
-                .map(|y| match y {
-                    Some(_) => 1,
-                    None => 0,
-                })
-                .collect::<Vec<_>>()
-        })
-        .collect::<Vec<_>>();
-    println!("{:?}", pretty_grid);
-
     Input { grid: grid }
 }
 
 #[aoc(day14, part1)]
-pub fn part1(input: &Input) -> String {
-    unimplemented!()
+pub fn part1(input: &Input) -> usize {
+    let mut units = 0;
+    let mut grid = input.grid.clone();
+    'sand: loop {
+            units += 1;
+            match sand_fall(&mut grid) {
+                true => break 'sand,
+                false => continue,
+            }
+    }
+    print_grid(grid);
+    units - 1
 }
 
 #[aoc(day14, part2)]
-pub fn part2(input: &Input) -> String {
+pub fn part2(input: &Input) -> usize {
     unimplemented!()
 }
 
@@ -99,4 +101,54 @@ pub fn find_limits(pairs: &Vec<Vec<(usize, usize)>>) -> (usize, usize) {
     let max_y = (&pairs).into_iter().map(|x| x.1).max().unwrap();
 
     (max_x, max_y)
+}
+
+pub fn sand_fall(grid: &mut Vec<Vec<Option<Content>>>) -> bool {
+    let mut x = 500;
+    let mut y = 0;
+    'fall: loop {
+        if grid.get(y + 1).is_some() {
+            if grid[y + 1][x].is_none() {
+                y += 1;
+                continue;
+            } else if grid[y + 1][x - 1].is_none() {
+                y += 1;
+                x -= 1;
+                continue;
+            } else if grid[y + 1][x + 1].is_none() {
+                y += 1;
+                x += 1;
+                continue;
+            } else {
+                let item = &mut grid[y][x];
+                *item = Some(Content::Sand);
+                break 'fall false;
+            }
+        }  else {
+            break 'fall true;
+        }
+    }
+}
+
+fn print_grid(grid: Vec<Vec<Option<Content>>>) {
+    let mut grid = grid.clone();
+    let item = &mut grid[0][500];
+    *item = Some(Content::Origin);
+    let grid = grid;
+    let pretty_grid = (&grid)
+    .into_iter()
+    .map(|x| {
+        x.into_iter()
+            .map(|y| match y {
+                Some(Content::Rock) => '#',
+                Some(Content::Sand) => 'o',
+                Some(Content::Origin) => '+',
+                None => '.',
+            })
+            .collect::<Vec<_>>()
+    })
+    .collect::<Vec<_>>();
+for line in pretty_grid {
+    println!("{}", line.into_iter().collect::<String>());
+}
 }
