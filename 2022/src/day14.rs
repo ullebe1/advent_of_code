@@ -35,7 +35,7 @@ pub fn input_generator(input: &str) -> Input {
 
     let limits = find_limits(&lines);
     println!("{:#?}", limits);
-    let mut grid = vec![vec![None; limits.0 + 1]; limits.1 + 1];
+    let mut grid = vec![vec![None; 1000]; limits.1 + 1];
 
     // Insert rocks
     for line in lines {
@@ -91,7 +91,20 @@ pub fn part1(input: &Input) -> usize {
 
 #[aoc(day14, part2)]
 pub fn part2(input: &Input) -> usize {
-    unimplemented!()
+    let mut units = 0;
+    let mut grid = input.grid.clone();
+    grid.push(vec![None; 1000]);
+    grid.push(vec![Some(Content::Rock); 1000]);
+    'sand: loop {
+            print!(".");
+            units += 1;
+            match sand_fall(&mut grid) {
+                true => break 'sand,
+                false => continue,
+            }
+    }
+    print_grid(grid);
+    units - 1
 }
 
 pub fn find_limits(pairs: &Vec<Vec<(usize, usize)>>) -> (usize, usize) {
@@ -107,6 +120,9 @@ pub fn sand_fall(grid: &mut Vec<Vec<Option<Content>>>) -> bool {
     let mut x = 500;
     let mut y = 0;
     'fall: loop {
+        if let Some(Content::Sand) = grid[y][x] {
+            break 'fall true;
+        }
         if grid.get(y + 1).is_some() {
             if grid[y + 1][x].is_none() {
                 y += 1;
