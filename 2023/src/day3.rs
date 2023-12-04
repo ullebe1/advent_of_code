@@ -144,14 +144,14 @@ fn has_gear_neighbours(schematic: &Vec<String>, start: usize, end: usize, line: 
     //check if the characters right above the match is a symbol
     if line > 0 {
         let above = &(schematic[line - 1][start..end]);
-        for found in re.find(&above.to_string()) {
+        while let Some(found) = re.find(&above.to_string()) {
             return Some((line - 1, start + found.start()));
         }
     }
     //check if the characters right below the match is a symbol
     if line < schematic.len() - 1 {
         let below = &(schematic[line + 1][start..end]);
-        for found in re.find(&below.to_string()) {
+        while let Some(found) = re.find(&below.to_string()) {
             return Some((line + 1, start + found.start()));
         }
     }
