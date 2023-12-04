@@ -12,6 +12,7 @@ dependencies = [
  "intervallum",
  "itertools",
  "regex",
+ "scan_fmt",
 ]
 
 [[package]]
@@ -184,6 +185,15 @@ name = "ryu"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c9613b5a66ab9ba26415184cfc41156594925a9cf3a2057e57f31ff145f6568"
+
+[[package]]
+name = "scan_fmt"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b53b0a5db882a8e2fdaae0a43f7b39e7e9082389e978398bdf223a55b581248"
+dependencies = [
+ "regex",
+]
 
 [[package]]
 name = "serde"
