@@ -10,7 +10,7 @@ pub fn input_generator(input: &str) -> Input {
     let lines = input.lines();
 
     let calibrations = lines.map(|line| line.to_string()).collect::<Vec<String>>();
-    
+
     Input { calibrations }
 }
 
@@ -47,7 +47,7 @@ pub fn part1(input: &Input) -> usize {
 #[aoc(day1, part2)]
 pub fn part2(input: &Input) -> usize {
     let mut digits = Vec::new();
-    
+
     for mut calibration in input.calibrations.clone() {
         let mut first = None;
         let mut second = None;
@@ -79,9 +79,9 @@ pub fn part2(input: &Input) -> usize {
                 ['z', 'e', 'r', 'o', ..] => Some('0'),
                 _ => None,
             };
-            
+
             calibration = calibration.chars().skip(1).collect::<String>();
-            
+
             if digit.is_some() {
                 if first.is_none() {
                     first = digit;
@@ -92,7 +92,7 @@ pub fn part2(input: &Input) -> usize {
                 }
             }
         }
-        
+
         if first.is_some() && second.is_some() {
             digits.push(first.unwrap().to_string() + &second.unwrap().to_string());
         } else if first.is_some() {

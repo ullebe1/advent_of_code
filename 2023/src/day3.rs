@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use aoc_runner_derive::{aoc, aoc_generator};
 use regex::Regex;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Input {
@@ -12,60 +12,66 @@ pub fn input_generator(input: &str) -> Input {
     let lines = input.lines();
 
     let schematic = lines.map(|line| line.to_string()).collect::<Vec<String>>();
-    
+
     Input { schematic }
 }
 
 #[aoc(day3, part1)]
 pub fn part1(input: &Input) -> usize {
     let mut sum = 0;
-    
+
     let re = Regex::new(r"\d+").unwrap();
     let schematic = input.schematic.clone();
-    
+
     for (nr, line) in schematic.iter().enumerate() {
-        let numbers = re.find_iter(&line).map(|m| {
-            if has_symbol_neighbours(&schematic, m.start(), m.end(), nr) {
-                m.as_str().parse::<usize>().ok().unwrap()
-            } else {
-                0
-            }
-        }).collect::<Vec<usize>>();
+        let numbers = re
+            .find_iter(&line)
+            .map(|m| {
+                if has_symbol_neighbours(&schematic, m.start(), m.end(), nr) {
+                    m.as_str().parse::<usize>().ok().unwrap()
+                } else {
+                    0
+                }
+            })
+            .collect::<Vec<usize>>();
         sum += numbers.iter().sum::<usize>();
     }
-    
+
     sum
 }
 
 #[aoc(day3, part2)]
 pub fn part2(input: &Input) -> usize {
     let mut sum = 0;
-    
+
     let re = Regex::new(r"\d+").unwrap();
     let schematic = input.schematic.clone();
     let mut gears: HashMap<(usize, usize), Vec<usize>> = HashMap::new();
-    
+
     for (nr, line) in schematic.iter().enumerate() {
         for m in re.find_iter(&line) {
             if let Some((line, pos)) = has_gear_neighbours(&schematic, m.start(), m.end(), nr) {
-                gears.entry((line, pos)).or_insert(Vec::new()).push(m.as_str().parse::<usize>().ok().unwrap());
+                gears
+                    .entry((line, pos))
+                    .or_insert(Vec::new())
+                    .push(m.as_str().parse::<usize>().ok().unwrap());
             }
-        };
+        }
     }
-    
+
     for gear in gears.values() {
         if gear.len() > 1 {
             sum += gear.iter().product::<usize>();
         }
     }
-    
+
     sum
 }
 
 fn has_symbol_neighbours(schematic: &Vec<String>, start: usize, end: usize, line: usize) -> bool {
     let len = schematic[line].len();
     let re = Regex::new(r"[^\w.]").unwrap();
-    
+
     //check if the character right before the match is a symbol
     if start > 0 {
         let before = schematic[line].chars().nth(start - 1).unwrap();
@@ -119,11 +125,16 @@ fn has_symbol_neighbours(schematic: &Vec<String>, start: usize, end: usize, line
             return true;
         }
     }
-    
+
     false
 }
 
-fn has_gear_neighbours(schematic: &Vec<String>, start: usize, end: usize, line: usize) -> Option<(usize, usize)> {
+fn has_gear_neighbours(
+    schematic: &Vec<String>,
+    start: usize,
+    end: usize,
+    line: usize,
+) -> Option<(usize, usize)> {
     let len = schematic[line].len();
     let re = Regex::new(r"\*").unwrap();
 
