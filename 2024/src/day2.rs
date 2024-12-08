@@ -79,19 +79,16 @@ pub fn part2(input: &Input) -> usize {
         if unsafe_report {
             let mut counter = 0;
             let mut temp_unsafe_report = false;
-            println!("Unsafe report, enabling dampener: {:?}", report);
             
             while counter < report.len() {
                 previous = None;
                 direction = None;
                 let mut report = report.clone();
                 report.remove(counter);
-                println!("Trying with damper: {:?}", report);
                 for level in report.iter() {
                     let (unsafe_report_current, new_direction) = is_a_safe_transition(previous, *level, direction);
                     
                     if unsafe_report_current {
-                        println!("  Unsafe report: {:?}", report);
                         temp_unsafe_report = true;
                         break;
                     }
@@ -104,7 +101,6 @@ pub fn part2(input: &Input) -> usize {
                 counter += 1;
 
                 if !temp_unsafe_report {
-                    println!("Damper worked: {:?}", report);
                     unsafe_report = false;
                     break;
                 }
